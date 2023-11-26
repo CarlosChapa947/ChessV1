@@ -7,7 +7,7 @@ from multiprocessing import Process, Queue
 piece_score = {"K": 0, "Q": 9, "R": 5, "N": 3, "B": 3, "p": 1}
 CHECKMATE = 400
 STALEMATE = 0
-DEPTH = 4
+DEPTH = 3
 next_move = None
 counter = None
 transposition_table: dict = {}

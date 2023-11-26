@@ -40,7 +40,7 @@ def main():
     playerClicks = []
     running = True
     game = True
-    player_white = True
+    player_white = False
     player_black = False
     IA_thinking = False
     move_finder_process = None
@@ -175,6 +175,7 @@ def draw_move_log(screen, gs, move_log_font):
     for i in range(len(move_text)):
         if test_y >= move_panel_height:
             screen.fill(p.Color("white"), move_log_area)
+            test_y = padding
         text = move_text[i].getChessNotation()
         text_object = move_log_font.render(text, True, p.Color("Black"))
         text_location = move_log_area.move(padding, test_y)
