@@ -196,7 +196,7 @@ def find_bestmove_negamax_aplhabeta_pruned(gamestate: Gamestate, validmoves: lis
             validmoves.remove(killer)
             validmoves.insert(0, killer)
 
-    #if is_null_move_allowed and depth >= 4 and not gamestate.inCheck():
+    #if is_null_move_allowed and depth >= 4 and not gamestate.is_check():
         #gamestate.whiteToMove = not gamestate.whiteToMove  # Make null move
         #evalu = -find_bestmove_negamax_aplhabeta_pruned(gamestate, validmoves, null_move_depth, -beta, -beta + 1,
                                                        # -turn_multi, False)
@@ -294,9 +294,9 @@ def scoreboard_normal(gamestate: Gamestate):
                 if piece[0] == "b":
                     score -= piece_score[piece[1]] + piece_position_score
 
-    if gamestate.inCheck() and gamestate.whiteToMove:
+    if gamestate.is_check() and gamestate.whiteToMove:
         score += 2
-    elif gamestate.inCheck() and not gamestate.whiteToMove:
+    elif gamestate.is_check() and not gamestate.whiteToMove:
         score -= 2
 
     return score
@@ -322,4 +322,3 @@ def scoreboard_normal(gamestate: Gamestate):
 def board_to_key(board) -> tuple:
     # Flatten the board and convert it to a tuple for immutability
     return tuple(item for row in board for item in row)
-

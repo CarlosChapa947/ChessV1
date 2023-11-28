@@ -1,7 +1,3 @@
-import numpy as np
-from numpy.typing import NDArray
-import uuid
-
 
 class Move:
 
@@ -10,35 +6,33 @@ class Move:
     filesToCols = {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6, "h": 7}
     colsToFiles = {v: k for k, v in filesToCols.items()}
 
-    def __init__(self, startCord, endCord, board, enpassantMove=False, isCastleMove=False):
-        self.startRow = startCord[0]
-        self.startCol = startCord[1]
-        self.endRow = endCord[0]
-        self.endCol = endCord[1]
+    def __init__(self, start_cord, end_cord, board, enpassant_move=False, is_castle_move=False):
+        self.startRow = start_cord[0]
+        self.startCol = start_cord[1]
+        self.endRow = end_cord[0]
+        self.endCol = end_cord[1]
         self.pieceMoved = board[self.startRow][self.startCol]
         self.pieceCaptured = board[self.endRow][self.endCol]
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         self.isPawnPromotion = False
-        self.isCastleMove = isCastleMove
+        self.isCastleMove = is_castle_move
         self.promotionChoice = "Q"
-        self.isenpassantMove = enpassantMove
+        self.isenpassantMove = enpassant_move
         if self.pieceMoved == "wp" and self.endRow == 0:
             self.isPawnPromotion = True
         elif self.pieceMoved == "bp" and self.endRow == 7:
             self.isPawnPromotion = True
 
-        if enpassantMove:
+        if enpassant_move:
             self.pieceCaptured = board[self.startRow][self.endCol]
-
-
 
     def __eq__(self, other):
         if isinstance(other, Move):
             return self.moveID == other.moveID
         return False
 
-    def getChessNotation(self) -> list:
-        return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
+    def get_chess_notation(self) -> list:
+        return self.get_rank_file(self.startRow, self.startCol) + self.get_rank_file(self.endRow, self.endCol)
 
-    def getRankFile(self, row: int, col: int) -> list:
+    def get_rank_file(self, row: int, col: int) -> list:
         return self.colsToFiles[col] + self.rowsToRanks[row]
