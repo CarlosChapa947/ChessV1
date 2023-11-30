@@ -7,7 +7,7 @@ from multiprocessing import Process, Queue
 piece_score = {"K": 0, "Q": 9, "R": 5, "N": 3, "B": 3, "p": 1}
 CHECKMATE = 400
 STALEMATE = 0
-DEPTH = 3
+DEPTH = 4
 next_move = None
 counter = None
 transposition_table: dict = {}
@@ -185,7 +185,7 @@ def find_bestmove_negamax(gamestate: Gamestate, validmoves: list[Move]):
     return next_move
 
 
-def find_bestmove_negamax_aplhabeta_pruned(gamestate: Gamestate, validmoves: list, alpha, beta, depth: int, multi) -> int:
+def find_bestmove_negamax_aplhabeta_pruned(gamestate: Gamestate, validmoves: list, alpha, beta, depth: int) -> int:
     global next_move, counter, transposition_table, KILLER_MOVES
     #board_key = board_to_key(gamestate.board)
     #R = 3  # Reduction factor
@@ -212,12 +212,12 @@ def find_bestmove_negamax_aplhabeta_pruned(gamestate: Gamestate, validmoves: lis
 
     counter += 1
     if depth == 0:
-        return multi * scoreboard_normal(gamestate)
+        return scoreboard_normal(gamestate)
     maxscore = -CHECKMATE
     for move in validmoves:
         gamestate.make_move(move)
         next_moves = gamestate.get_valid_moves_efficient()
-        score = -find_bestmove_negamax_aplhabeta_pruned(gamestate, next_moves, -beta, -alpha, depth - 1, -multi)
+        score = -find_bestmove_negamax_aplhabeta_pruned(gamestate, next_moves, -beta, -alpha, depth - 1)
         if score > maxscore:
             maxscore = score
             if depth == DEPTH:
@@ -244,9 +244,9 @@ def find_move_nega_alphabeta(gamestate: Gamestate, validmoves: list[Move], decis
 
     for depth in range(1, DEPTH + 1):
         if gamestate.whiteToMove:
-            find_bestmove_negamax_aplhabeta_pruned(gamestate, validmoves, alpha=-CHECKMATE, beta=CHECKMATE, depth=depth, multi=1)
+            find_bestmove_negamax_aplhabeta_pruned(gamestate, validmoves, alpha=-CHECKMATE, beta=CHECKMATE, depth=depth)
         elif not gamestate.whiteToMove:
-            find_bestmove_negamax_aplhabeta_pruned(gamestate, validmoves, alpha=-CHECKMATE, beta=CHECKMATE, depth=depth, multi=-1)
+            find_bestmove_negamax_aplhabeta_pruned(gamestate, validmoves, alpha=-CHECKMATE, beta=CHECKMATE, depth=depth)
         if time.time() - timer > 30:
             break
     decision_queue.put(next_move)
@@ -299,7 +299,11 @@ def scoreboard_normal(gamestate: Gamestate):
     elif gamestate.is_check() and not gamestate.whiteToMove:
         score -= 2
 
-    return score
+    if gamestate.whiteToMove:
+        return score
+    else:
+        return -score
+
 
     """
     score = 0
